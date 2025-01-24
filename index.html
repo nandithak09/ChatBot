@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHATBOT</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f1f1f1;
+      padding: 20px;
+      max-width: 600px; /* Reduced width for a more compact view */
+      margin: 0 auto;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem; /* Smaller font size */
+      color: #4CAF50;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-size: 1rem; /* Smaller label font */
+      font-weight: bold;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 8px; /* Reduced padding */
+      margin-top: 8px;
+      margin-bottom: 16px; /* Reduced margin */
+      font-size: 0.9rem; /* Smaller font size */
+      border-radius: 6px; /* Smaller border radius */
+      border: 1px solid #ddd;
+      background-color: #fafafa;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    /* Answer Area */
+    h2 {
+      font-size: 1.2rem; /* Smaller heading font size */
+      color: #4CAF50;
+    }
+
+    #answer {
+      background-color: #f4f4f4;
+      padding: 12px; /* Reduced padding */
+      border: 1px solid #ddd;
+      border-radius: 6px; /* Smaller border radius */
+      font-size: 0.9rem; /* Smaller font size */
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
+
+    /* Small adjustments for responsiveness */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      select, input, button {
+        font-size: 1rem;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>CHATBOT</h1>
+
+    <div>
+      <label for="platform">Choose Platform:</label>
+      <select id="platform">
+        <option value="mParticle">mParticle</option>
+        <option value="Lytics">Lytics</option>
+        <option value="Zeotap">Zeotap</option>
+        <option value="Segment">Segment</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="question">Ask a How-to Question:</label>
+      <input type="text" id="question" placeholder="E.g., How can I create a user profile in mParticle?" />
+    </div>
+
+    <button onclick="askQuestion()">Ask</button>
+
+    <h2>Answer:</h2>
+    <pre id="answer">Please ask a question to get started...</pre>
+  </div>
+
+  <script>
+    async function askQuestion() {
+      const platform = document.getElementById('platform').value;
+      const question = document.getElementById('question').value;
+
+      if (!question.trim()) {
+        alert("Please enter a question.");
+        return;
+      }
+
+      // Display loading message while waiting for response
+      document.getElementById('answer').textContent = "Fetching the answer... Please wait.";
+
+      // Send a POST request to the server with the platform and question
+      const response = await fetch('http://localhost:3000/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ platform, question })
+      });
+
+      const data = await response.json();
+
+      // Display the response from the backend
+      if (data.answer) {
+        document.getElementById('answer').textContent = data.answer;
+      } else {
+        document.getElementById('answer').textContent = 'Sorry, no relevant information was found.';
+      }
+    }
+  </script>
+</body>
+</html>
